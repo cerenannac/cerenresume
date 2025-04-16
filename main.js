@@ -60,8 +60,7 @@ window.addEventListener("scroll", () => {
   skillFills.forEach(fill => {
     const rect = fill.getBoundingClientRect();
     if (rect.top < window.innerHeight - 50) {
-      const width = fill.style.width;
-      fill.style.width = width;
+      fill.classList.add("filled");
     }
   });
 });
@@ -80,9 +79,8 @@ const commentForm = document.getElementById("commentForm");
 const commentList = document.getElementById("commentList");
 
 if (commentForm && commentList) {
-  const API_URL = "https://cerenannac.com/comments"; // Active Cloudflare Worker endpoint
+  const API_URL = "https://cerenannac.com/comments";
 
-  // Load existing comments from API
   async function loadComments() {
     try {
       const res = await fetch(API_URL);
@@ -98,7 +96,6 @@ if (commentForm && commentList) {
     }
   }
 
-  // Submit new comment to API
   commentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(commentForm);
@@ -115,7 +112,7 @@ if (commentForm && commentList) {
       const result = await res.json();
       if (result.status === "success") {
         commentForm.reset();
-        loadComments(); // Reload comments after submission
+        loadComments();
       } else {
         alert("Failed to send comment.");
       }
@@ -125,6 +122,5 @@ if (commentForm && commentList) {
     }
   });
 
-  // Initial fetch of comments
   loadComments();
 }
