@@ -1,4 +1,3 @@
-
 //  Dark Mode Toggle
 
 const toggleButton = document.getElementById('toggle-theme');
@@ -35,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type();
   }
 
- 
   //  Scroll Reveal
- 
   const reveals = document.querySelectorAll(".reveal");
   function revealOnScroll() {
     for (const el of reveals) {
@@ -106,8 +103,7 @@ const commentForm = document.getElementById('commentForm');
 const commentList = document.getElementById('commentList');
 
 if (commentForm && commentList) {
-    const API_URL = "https://ceren-comments.cerennannac1.workers.dev/comments"; //  API worker URL
-
+  const API_URL = "https://cerenannac.com/comments"; // ✅ güncel API URL
 
   async function loadComments() {
     try {
