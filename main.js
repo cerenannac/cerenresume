@@ -1,25 +1,24 @@
-//  Dark Mode Toggle
+const API_URL = "https://cerenannac.com/comments";
 
-const toggleButton = document.getElementById('toggle-theme');
+// === DARK MODE (İsteğe bağlı) ===
+const toggleButton = document.getElementById("toggle-theme");
 if (toggleButton) {
-  toggleButton.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  toggleButton.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
   });
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark');
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
     }
   });
 }
 
-
-//  Typewriter Effect
-
+// === TYPEWRITER EFFECT ===
 document.addEventListener("DOMContentLoaded", () => {
-  const heroHeading = document.querySelector(".hero-text h2");
+  const heroHeading = document.querySelector(".typewriter");
   if (heroHeading) {
     const text = heroHeading.textContent;
     heroHeading.textContent = "";
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type();
   }
 
-  //  Scroll Reveal
+  // === REVEAL ANIMATION ===
   const reveals = document.querySelectorAll(".reveal");
   function revealOnScroll() {
     for (const el of reveals) {
@@ -48,63 +47,42 @@ document.addEventListener("DOMContentLoaded", () => {
   revealOnScroll();
 });
 
+// === SKILLS ANIMATION ===
+const skillCards = document.querySelectorAll(".skill-card");
+const skillFills = document.querySelectorAll(".skill-fill");
 
-// Skills Animations
-
-const skillCards = document.querySelectorAll('.skill-card');
-window.addEventListener('scroll', () => {
+window.addEventListener("scroll", () => {
   skillCards.forEach(card => {
     const rect = card.getBoundingClientRect();
     if (rect.top < window.innerHeight - 50) {
-      card.classList.add('reveal');
+      card.classList.add("reveal");
     }
   });
-});
 
-const skillFills = document.querySelectorAll('.skill-fill');
-window.addEventListener('scroll', () => {
   skillFills.forEach(fill => {
     const rect = fill.getBoundingClientRect();
     if (rect.top < window.innerHeight - 50) {
-      const width = fill.getAttribute('style').match(/width:\s*(\d+)%/)[1];
-      fill.style.width = width + '%';
+      const width = fill.style.width;
+      fill.style.width = width;
     }
   });
 });
 
-const fills = document.querySelectorAll('.skill-fill');
-function animateSkills() {
-  fills.forEach(fill => {
-    const rect = fill.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 50 && fill.innerText === "0%") {
-      const percent = fill.getAttribute('data-fill');
-      fill.style.width = percent + '%';
-      fill.innerText = percent + '%';
-    }
-  });
-}
-window.addEventListener('scroll', animateSkills);
-
-
-//  Contact Form
-
-const contactForm = document.getElementById('contact-form');
+// === CONTACT FORM (fake handler) ===
+const contactForm = document.getElementById("contact-form");
 if (contactForm) {
-  contactForm.addEventListener('submit', function (e) {
+  contactForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    alert('Message sent!');
+    alert("Message sent!");
   });
 }
 
-
-//  Guestbook 
-
-const commentForm = document.getElementById('commentForm');
-const commentList = document.getElementById('commentList');
+// === GUESTBOOK / COMMENT SECTION ===
+const commentForm = document.getElementById("commentForm");
+const commentList = document.getElementById("commentList");
 
 if (commentForm && commentList) {
-  const API_URL = "https://cerenannac.com/comments"; // ✅ güncel API URL
-
+  // Load existing comments
   async function loadComments() {
     try {
       const res = await fetch(API_URL);
@@ -115,24 +93,38 @@ if (commentForm && commentList) {
         </div>
       `).join('');
     } catch (err) {
+      console.error("Error loading comments:", err);
       commentList.innerHTML = "<p style='color:red;'>Unable to load comments.</p>";
     }
   }
 
-  commentForm.addEventListener('submit', async (e) => {
+  // Submit comment
+  commentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(commentForm);
-    await fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: formData.get('name'),
-        message: formData.get('message')
-      }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-    commentForm.reset();
-    loadComments();
+    const name = formData.get("name");
+    const message = formData.get("message");
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, message })
+      });
+
+      const result = await res.json();
+      if (result.status === "success") {
+        commentForm.reset();
+        loadComments();
+      } else {
+        alert("Failed to send comment.");
+      }
+    } catch (err) {
+      console.error("Error submitting comment:", err);
+      alert("Something went wrong.");
+    }
   });
 
+  // Initial load
   loadComments();
 }
