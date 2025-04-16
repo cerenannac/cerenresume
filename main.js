@@ -1,6 +1,4 @@
-const API_URL = "https://cerenannac.com/comments";
-
-// === DARK MODE (İsteğe bağlı) ===
+// === Dark Mode Toggle ===
 const toggleButton = document.getElementById("toggle-theme");
 if (toggleButton) {
   toggleButton.addEventListener("click", () => {
@@ -16,7 +14,7 @@ if (toggleButton) {
   });
 }
 
-// === TYPEWRITER EFFECT ===
+// === Typewriter Effect for Header Text ===
 document.addEventListener("DOMContentLoaded", () => {
   const heroHeading = document.querySelector(".typewriter");
   if (heroHeading) {
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type();
   }
 
-  // === REVEAL ANIMATION ===
+  // === Reveal Elements on Scroll ===
   const reveals = document.querySelectorAll(".reveal");
   function revealOnScroll() {
     for (const el of reveals) {
@@ -47,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   revealOnScroll();
 });
 
-// === SKILLS ANIMATION ===
+// === Skill Card & Bar Animation ===
 const skillCards = document.querySelectorAll(".skill-card");
 const skillFills = document.querySelectorAll(".skill-fill");
 
@@ -68,7 +66,7 @@ window.addEventListener("scroll", () => {
   });
 });
 
-// === CONTACT FORM (fake handler) ===
+// === Fake Contact Form Alert ===
 const contactForm = document.getElementById("contact-form");
 if (contactForm) {
   contactForm.addEventListener("submit", function (e) {
@@ -77,12 +75,14 @@ if (contactForm) {
   });
 }
 
-// === GUESTBOOK / COMMENT SECTION ===
+// === Guestbook / Comment System ===
 const commentForm = document.getElementById("commentForm");
 const commentList = document.getElementById("commentList");
 
 if (commentForm && commentList) {
-  // Load existing comments
+  const API_URL = "https://cerenannac.com/comments"; // Active Cloudflare Worker endpoint
+
+  // Load existing comments from API
   async function loadComments() {
     try {
       const res = await fetch(API_URL);
@@ -98,7 +98,7 @@ if (commentForm && commentList) {
     }
   }
 
-  // Submit comment
+  // Submit new comment to API
   commentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(commentForm);
@@ -115,7 +115,7 @@ if (commentForm && commentList) {
       const result = await res.json();
       if (result.status === "success") {
         commentForm.reset();
-        loadComments();
+        loadComments(); // Reload comments after submission
       } else {
         alert("Failed to send comment.");
       }
@@ -125,6 +125,6 @@ if (commentForm && commentList) {
     }
   });
 
-  // Initial load
+  // Initial fetch of comments
   loadComments();
 }
